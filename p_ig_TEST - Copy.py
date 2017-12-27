@@ -168,7 +168,7 @@ epic_id = "CS.D.USCGC.TODAY.IP" #Gold
 price_list = []
 ltv_list = []
 time.sleep(2)
-base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/MINUTE_10/5'
+base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/4'
 # Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
 auth_r = requests.get(base_url, headers=authenticated_headers)
 d = json.loads(auth_r.text)
@@ -276,6 +276,7 @@ else:
 # currencyCode_value = "GBP"
 # forceOpen_value = True
 # stopDistance_value = "1200"
+# NOTE :- HOW TO GET MIN STOP DISTANCE WITH GUARANTEED STOP????????????
 
 # #UNIT TEST FOR GOLD
 limitDistance_value = "1"
@@ -291,46 +292,14 @@ stopDistance_value = "30"
 #MAIN PROGRAM LOOP STARTS HERE
 
 for x in range(0,30):
-
-	# if x == 0:
-		# print ("First Time Round Loop")
-		# #HACK :- Yeah, Whatever ... First time round the loop
-	# else:
-		# if x % 2 == 0: 
-		# #even 
-			# print ("Even time round Loop")
-			# DIRECTION_TO_TRADE = "BUY"
-			# DIRECTION_TO_CLOSE = "SELL"
-			# DIRECTION_TO_COMPARE = 'bid'
-		# else: 
-		# #odd
-			# print ("Odd time round Loop")
-			# DIRECTION_TO_TRADE = "SELL"
-			# DIRECTION_TO_CLOSE = "BUY"
-			# DIRECTION_TO_COMPARE = 'offer'
-			
-	# HACK FOR BITCOIN REMOVE LATER!!!
-	# DIRECTION_TO_TRADE = "SELL"
-	# DIRECTION_TO_CLOSE = "BUY"
-	# DIRECTION_TO_COMPARE = 'offer'
-	
-	#---------------------------------
-	#---------------------------------
-	#---------------------------------
-	#---------------------------------
 	
 	price_list = []
 	ltv_list = []
 	time.sleep(2)
-	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/2'
+	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/4'
 	# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
 	auth_r = requests.get(base_url, headers=authenticated_headers)
 	d = json.loads(auth_r.text)
-	
-	#DEBUG
-	# print(auth_r.status_code)
-	# print(auth_r.reason)
-	# print (auth_r.text)
 	
 	for i in d['prices']:
 		ask_price = i['closePrice']['ask']
@@ -422,11 +391,8 @@ for x in range(0,30):
 		
 	
 	#KEEP READING IN FOR PROFIT
-	
-	while PROFIT_OR_LOSS < 0:
-		
-		try:
-	
+	try:
+		while PROFIT_OR_LOSS < 0.1: #Over 10p otherwise not worth it and price could move
 			base_url = REAL_OR_NO_REAL + '/positions/'+ DEAL_ID
 			auth_r = requests.get(base_url, headers=authenticated_headers)		
 			d = json.loads(auth_r.text)
@@ -435,82 +401,50 @@ for x in range(0,30):
 				PROFIT_OR_LOSS = float(d['position']['openLevel']) - float(d['market'][DIRECTION_TO_COMPARE])
 				PROFIT_OR_LOSS = float(PROFIT_OR_LOSS * float(size_value))
 				print ("Deal Number : " + str(x) + " Profit/Loss : " + str(PROFIT_OR_LOSS))
-				time.sleep(0.5)
+				time.sleep(3) #Don't be too keen to read price
 			else:
 				PROFIT_OR_LOSS = float(d['market'][DIRECTION_TO_COMPARE] - float(d['position']['openLevel']))
 				PROFIT_OR_LOSS = float(PROFIT_OR_LOSS * float(size_value))
 				print ("Deal Number : " + str(x) + " Profit/Loss : " + str(PROFIT_OR_LOSS))
-				time.sleep(0.5)
-			#-------------------------------------------------------------------------------------------------
-			#-------------------------------------------------------------------------------------------------
-			#-------------------------------------------------------------------------------------------------
-			
-			#print (str(size_value))
-			#print (str(PROFIT_OR_LOSS))
-			#THIS CODE IS FUCKED BECAUSE OF THE WEIRD WAY THAT MATHS WORKS IN PYTHON, I WILL FIX IT LATER UNLESS YOU WANT TO....!!!
-			
-			# if float(size_value) < float(PROFIT_OR_LOSS):
-				# print ("ASSUME DIRECTION MIGHT BE CHANGING")
-				# #ARTIFICIAL STOP LOSS CODE
-				# SIZE = size_value
-				# ORDER_TYPE = orderType_value
-				# base_url = REAL_OR_NO_REAL + '/positions/otc'
-				# data = {"dealId":DEAL_ID,"direction":DIRECTION_TO_CLOSE,"size":SIZE,"orderType":ORDER_TYPE}
-				# #authenticated_headers_delete IS HACKY AF WORK AROUND!! AS PER .... https://labs.ig.com/node/36
-				# authenticated_headers_delete = {'Content-Type':'application/json; charset=utf-8',
-						# 'Accept':'application/json; charset=utf-8',
-						# 'X-IG-API-KEY':API_KEY,
-						# 'CST':CST_token,
-						# 'X-SECURITY-TOKEN':x_sec_token,
-						# '_method':"DELETE"}
-				# auth_r = requests.post(base_url, data=json.dumps(data), headers=authenticated_headers_delete)		
-				# print(r.status_code)
-				# print(r.reason)
-				# print (r.text)
-			#-------------------------------------------------------------------------------------------------
-			#-------------------------------------------------------------------------------------------------
-			#-------------------------------------------------------------------------------------------------
-			#A note on Sleep Intervals, Seems we need min 4 seconds to wait sometimes price jumps around and we need to give time to get the latest price. 
-			#Close to profit, It might bounce around a bit. 
-			
-							
-		except Exception as e:
-			print(e)
-			print ("ERROR : ORDER MIGHT NOT BE OPEN FOR WHATEVER REASON")
-			#WOAH CALM DOWN! WAIT .... STOP LOSS MIGHT HAVE BEEN HIT
-			time.sleep(random.randint(1, 10))
-			pass
+				time.sleep(3) #Don't be too keen to read price
+						
+	except Exception as e:
+		print(e)
+		print ("ERROR : ORDER MIGHT NOT BE OPEN FOR WHATEVER REASON")
+		#WOAH CALM DOWN! WAIT .... STOP LOSS MIGHT HAVE BEEN HIT
+		time.sleep(random.randint(1, 10))
+		pass
 	
-		time.sleep(2)
+		time.sleep(1)
 			
-		if PROFIT_OR_LOSS > 0:
-			print ("ASSUME PROFIT!!")
-			SIZE = size_value
-			ORDER_TYPE = orderType_value
-			
-			base_url = REAL_OR_NO_REAL + '/positions/otc'
-			data = {"dealId":DEAL_ID,"direction":DIRECTION_TO_CLOSE,"size":SIZE,"orderType":ORDER_TYPE}
-			#authenticated_headers_delete IS HACKY AF WORK AROUND!! AS PER .... https://labs.ig.com/node/36
-			authenticated_headers_delete = {'Content-Type':'application/json; charset=utf-8',
-					'Accept':'application/json; charset=utf-8',
-					'X-IG-API-KEY':API_KEY,
-					'CST':CST_token,
-					'X-SECURITY-TOKEN':x_sec_token,
-					'_method':"DELETE"}
-			
-			auth_r = requests.post(base_url, data=json.dumps(data), headers=authenticated_headers_delete)	
-			#CLOSE TRADE
-			print(r.status_code)
-			print(r.reason)
-			print (r.text)
-			
-			# #CONFIRM CLOSE - FUTURE
-			# base_url = REAL_OR_NO_REAL + '/confirms/'+ deal_ref
-			# auth_r = requests.get(base_url, headers=authenticated_headers)
-			# d = json.loads(auth_r.text)
-			# DEAL_ID = d['dealId']
-			# print("DEAL ID : " + str(d['dealId']))
-			# print(d['dealStatus'])
-			# print(d['reason'])
-			
-			time.sleep(random.randint(1, 10)) #Obligatory Wait before doing next order
+	if PROFIT_OR_LOSS > 0:
+		print ("ASSUME PROFIT!!")
+		SIZE = size_value
+		ORDER_TYPE = orderType_value
+		
+		base_url = REAL_OR_NO_REAL + '/positions/otc'
+		data = {"dealId":DEAL_ID,"direction":DIRECTION_TO_CLOSE,"size":SIZE,"orderType":ORDER_TYPE}
+		#authenticated_headers_delete IS HACKY AF WORK AROUND!! AS PER .... https://labs.ig.com/node/36
+		authenticated_headers_delete = {'Content-Type':'application/json; charset=utf-8',
+				'Accept':'application/json; charset=utf-8',
+				'X-IG-API-KEY':API_KEY,
+				'CST':CST_token,
+				'X-SECURITY-TOKEN':x_sec_token,
+				'_method':"DELETE"}
+		
+		auth_r = requests.post(base_url, data=json.dumps(data), headers=authenticated_headers_delete)	
+		#CLOSE TRADE
+		print(r.status_code)
+		print(r.reason)
+		print (r.text)
+		
+		# #CONFIRM CLOSE - FUTURE
+		# base_url = REAL_OR_NO_REAL + '/confirms/'+ deal_ref
+		# auth_r = requests.get(base_url, headers=authenticated_headers)
+		# d = json.loads(auth_r.text)
+		# DEAL_ID = d['dealId']
+		# print("DEAL ID : " + str(d['dealId']))
+		# print(d['dealStatus'])
+		# print(d['reason'])
+		
+		time.sleep(random.randint(1, 10)) #Obligatory Wait before doing next order
