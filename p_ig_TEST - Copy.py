@@ -294,8 +294,13 @@ for x in range(1,30):
 	
 	price_list = []
 	ltv_list = []
-	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/' + str(x)
-	# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
+	
+	if x == 1:
+		base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/4'
+	else:
+		base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/' + str(x)
+		# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
+	
 	auth_r = requests.get(base_url, headers=authenticated_headers)
 	d = json.loads(auth_r.text)
 	
@@ -340,10 +345,10 @@ for x in range(1,30):
 			DIRECTION_TO_CLOSE = "BUY"
 			DIRECTION_TO_COMPARE = 'offer'
 		else:
-			print ("DIRECTION IS UP (LONG)")
-			DIRECTION_TO_TRADE = "BUY"
-			DIRECTION_TO_CLOSE = "SELL"
-			DIRECTION_TO_COMPARE = 'bid'
+			print ("DIRECTION IS DOWN (SHORT)")
+			DIRECTION_TO_TRADE = "SELL"
+			DIRECTION_TO_CLOSE = "BUY"
+			DIRECTION_TO_COMPARE = 'offer'
 			
 	#---------------------------------
 	#---------------------------------
@@ -411,7 +416,7 @@ for x in range(1,30):
 				time.sleep(3) #Don't be too keen to read price
 						
 	except Exception as e:
-		print(e)
+		#print(e) #Yeah, I know now. 
 		print ("ERROR : ORDER MIGHT NOT BE OPEN FOR WHATEVER REASON")
 		#WOAH CALM DOWN! WAIT .... STOP LOSS MIGHT HAVE BEEN HIT
 		time.sleep(random.randint(1, 10))
