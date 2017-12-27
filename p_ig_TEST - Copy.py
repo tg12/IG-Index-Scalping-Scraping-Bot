@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#Christmas Eve TO DO
-#General Code Tidy up
+#TO DO's
 #Find a better way of setting epic, Rather than the Hacky AF way I do it now. It's OK for now. 
-#Calculate average of moving ticks
 
 import random
 import time
@@ -165,66 +163,66 @@ epic_id = "CS.D.USCGC.TODAY.IP" #Gold
 #*******************************************************************
 #*******************************************************************
 
-price_list = []
-ltv_list = []
-time.sleep(2)
-base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/4'
-# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
-auth_r = requests.get(base_url, headers=authenticated_headers)
-d = json.loads(auth_r.text)
+# price_list = []
+# ltv_list = []
+# time.sleep(2)
+# base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/4'
+# # Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
+# auth_r = requests.get(base_url, headers=authenticated_headers)
+# d = json.loads(auth_r.text)
 
-#DEBUG
-# print(auth_r.status_code)
-# print(auth_r.reason)
-# print (auth_r.text)
+# #DEBUG
+# # print(auth_r.status_code)
+# # print(auth_r.reason)
+# # print (auth_r.text)
 	
-for i in d['prices']:
-	#print(i['snapshotTime'])
-	#print(i['lastTradedVolume'])
-	ask_price = i['closePrice']['ask']
-	ltv = i['lastTradedVolume']
-	price_list.append(ask_price)
-	ltv_list.append(ltv)
+# for i in d['prices']:
+	# #print(i['snapshotTime'])
+	# #print(i['lastTradedVolume'])
+	# ask_price = i['closePrice']['ask']
+	# ltv = i['lastTradedVolume']
+	# price_list.append(ask_price)
+	# ltv_list.append(ltv)
 
-#---------------------------------
-firstValue = price_list[0]
-lastValue = price_list[-1]
-#---------------------------------
-Start_Trading_Volume = ltv_list[0]
-End_Trading_Volume = ltv_list[-1]
-#---------------------------------
+# #---------------------------------
+# firstValue = price_list[0]
+# lastValue = price_list[-1]
+# #---------------------------------
+# Start_Trading_Volume = ltv_list[0]
+# End_Trading_Volume = ltv_list[-1]
+# #---------------------------------
 
-print (Start_Trading_Volume)
-print (End_Trading_Volume)
+# print (Start_Trading_Volume)
+# print (End_Trading_Volume)
 		
-if Start_Trading_Volume < End_Trading_Volume:
-	print ("Higher Volume")
-	if firstValue <= lastValue:
-		#Long Candidate, Buyers require increasing numbers and increasing enthusiasm in order to keep pushing prices higher. 
-		print ("Higher Price")
-		print ("DIRECTION IS UP (LONG)")
-		DIRECTION_TO_TRADE = "BUY"
-		DIRECTION_TO_CLOSE = "SELL"
-		DIRECTION_TO_COMPARE = 'bid'
-	else:
-		print ("DIRECTION IS DOWN (SHORT)")
-		DIRECTION_TO_TRADE = "SELL"
-		DIRECTION_TO_CLOSE = "BUY"
-		DIRECTION_TO_COMPARE = 'offer'
-else:
-	print ("Lower Volume")
-	if firstValue <= lastValue:
-		#Increasing price and decreasing volume show lack of interest, and this is a warning of a potential reversal.
-		print ("Higher Price")
-		print ("DIRECTION IS DOWN (SHORT)")
-		DIRECTION_TO_TRADE = "SELL"
-		DIRECTION_TO_CLOSE = "BUY"
-		DIRECTION_TO_COMPARE = 'offer'
-	else:
-		print ("DIRECTION IS DOWN (SHORT)")
-		DIRECTION_TO_TRADE = "SELL"
-		DIRECTION_TO_CLOSE = "BUY"
-		DIRECTION_TO_COMPARE = 'offer'
+# if Start_Trading_Volume < End_Trading_Volume:
+	# print ("Higher Volume")
+	# if firstValue <= lastValue:
+		# #Long Candidate, Buyers require increasing numbers and increasing enthusiasm in order to keep pushing prices higher. 
+		# print ("Higher Price")
+		# print ("DIRECTION IS UP (LONG)")
+		# DIRECTION_TO_TRADE = "BUY"
+		# DIRECTION_TO_CLOSE = "SELL"
+		# DIRECTION_TO_COMPARE = 'bid'
+	# else:
+		# print ("DIRECTION IS DOWN (SHORT)")
+		# DIRECTION_TO_TRADE = "SELL"
+		# DIRECTION_TO_CLOSE = "BUY"
+		# DIRECTION_TO_COMPARE = 'offer'
+# else:
+	# print ("Lower Volume")
+	# if firstValue <= lastValue:
+		# #Increasing price and decreasing volume show lack of interest, and this is a warning of a potential reversal.
+		# print ("Higher Price")
+		# print ("DIRECTION IS DOWN (SHORT)")
+		# DIRECTION_TO_TRADE = "SELL"
+		# DIRECTION_TO_CLOSE = "BUY"
+		# DIRECTION_TO_COMPARE = 'offer'
+	# else:
+		# print ("DIRECTION IS DOWN (SHORT)")
+		# DIRECTION_TO_TRADE = "SELL"
+		# DIRECTION_TO_CLOSE = "BUY"
+		# DIRECTION_TO_COMPARE = 'offer'
 
 			
 #A Note on this, Trading Volume should be higher than when you first read it into the list, Then price should move accordingly. If not then this signifies a potential reversal
@@ -281,22 +279,22 @@ else:
 # #UNIT TEST FOR GOLD
 limitDistance_value = "1"
 orderType_value = "MARKET"
-size_value = "5"
+size_value = "10"
 expiry_value = "DFB"
 guaranteedStop_value = True
 currencyCode_value = "GBP"
 forceOpen_value = True
 stopDistance_value = "30"
 
+
 # Let's say 30 trades? Not to be too greedy.....
 #MAIN PROGRAM LOOP STARTS HERE
 
-for x in range(0,30):
+for x in range(1,30):
 	
 	price_list = []
 	ltv_list = []
-	time.sleep(2)
-	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/4'
+	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/' + x
 	# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
 	auth_r = requests.get(base_url, headers=authenticated_headers)
 	d = json.loads(auth_r.text)
@@ -342,10 +340,10 @@ for x in range(0,30):
 			DIRECTION_TO_CLOSE = "BUY"
 			DIRECTION_TO_COMPARE = 'offer'
 		else:
-			print ("DIRECTION IS DOWN (SHORT)")
-			DIRECTION_TO_TRADE = "SELL"
-			DIRECTION_TO_CLOSE = "BUY"
-			DIRECTION_TO_COMPARE = 'offer'
+			print ("DIRECTION IS UP (LONG)")
+			DIRECTION_TO_TRADE = "BUY"
+			DIRECTION_TO_CLOSE = "SELL"
+			DIRECTION_TO_COMPARE = 'bid'
 			
 	#---------------------------------
 	#---------------------------------
@@ -396,6 +394,10 @@ for x in range(0,30):
 			base_url = REAL_OR_NO_REAL + '/positions/'+ DEAL_ID
 			auth_r = requests.get(base_url, headers=authenticated_headers)		
 			d = json.loads(auth_r.text)
+			
+			#Add artificial stop loss code here - 27/12
+			#Check Profit/Loss against size values
+			
 						
 			if DIRECTION_TO_TRADE == "SELL":
 				PROFIT_OR_LOSS = float(d['position']['openLevel']) - float(d['market'][DIRECTION_TO_COMPARE])
