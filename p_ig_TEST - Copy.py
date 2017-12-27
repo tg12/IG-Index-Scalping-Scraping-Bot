@@ -294,7 +294,7 @@ for x in range(1,30):
 	
 	price_list = []
 	ltv_list = []
-	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/' + x
+	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/' + str(x)
 	# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
 	auth_r = requests.get(base_url, headers=authenticated_headers)
 	d = json.loads(auth_r.text)
@@ -316,7 +316,7 @@ for x in range(1,30):
 	print (Start_Trading_Volume)
 	print (End_Trading_Volume)
 
-	if Start_Trading_Volume < End_Trading_Volume:
+	if Start_Trading_Volume <= End_Trading_Volume:
 		print ("Higher Volume")
 		if firstValue <= lastValue:
 			#Long Candidate, Buyers require increasing numbers and increasing enthusiasm in order to keep pushing prices higher. 
