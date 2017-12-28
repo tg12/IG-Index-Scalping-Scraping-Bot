@@ -121,8 +121,9 @@ auth_r = requests.put(base_url, data=json.dumps(data), headers=authenticated_hea
 #*******************************************************************
 #*******************************************************************
 #*******************************************************************
+#Code to find your epic/instrument
 
-# search_term = "Spot Silver"
+# search_term = "Wall Street"
 # base_url = REAL_OR_NO_REAL + '/markets?searchTerm='+ search_term
 # auth_r = requests.get(base_url, headers=authenticated_headers)
 # d = json.loads(auth_r.text)
@@ -132,14 +133,6 @@ auth_r = requests.put(base_url, data=json.dumps(data), headers=authenticated_hea
 # print (auth_r.text)
 
 # for i in d['markets']:
-	# print("High : " + str(i['high']))
-	# print("----------")
-	# print("Low : " + str(i['low']))
-	# print("----------")
-	# print("Bid : " + str(i['bid']))
-	# print("----------")
-	# print("Offer : " + str(i['offer']))
-	# print("----------")
 	# if str(i['marketStatus']) == "TRADEABLE":
 		# print("Status : " + str(i['marketStatus']))
 		# print("----------")
@@ -148,24 +141,26 @@ auth_r = requests.put(base_url, data=json.dumps(data), headers=authenticated_hea
 	
 #epic_id = str(i['epic'])
 
-#HACKY
+#HACKY/Weekend Testing
 #epic_id = "CS.D.BITCOIN.TODAY.IP" #Bitcoin
 #epic_id = "IX.D.SUNFUN.DAILY.IP" #Weekend Trading
 #epic_id = "CS.D.ETHUSD.TODAY.IP" #Ether
 #epic_id = "CS.D.BCHUSD.TODAY.IP" #Bitcoin Cash
 
 #LIVE TEST
-epic_id = "CS.D.USCGC.TODAY.IP" #Gold
+#epic_id = "CS.D.USCGC.TODAY.IP" #Gold
 #epic_id = "CS.D.USCSI.TODAY.IP" #Silver
+#epic_id = "IX.D.FTSE.DAILY.IP"
+epic_id = "IX.D.DOW.DAILY.IP"
 
 base_url = REAL_OR_NO_REAL + '/markets/' + epic_id
 auth_r = requests.get(base_url, headers=authenticated_headers)
 d = json.loads(auth_r.text)
 
 #DEBUG
-print(auth_r.status_code)
-print(auth_r.reason)
-print (auth_r.text)
+# print(auth_r.status_code)
+# print(auth_r.reason)
+# print (auth_r.text)
 
 MARKET_ID = d['instrument']['marketId']
 
@@ -217,114 +212,132 @@ MARKET_ID = d['instrument']['marketId']
 # currencyCode_value = "GBP"
 # forceOpen_value = True
 # stopDistance_value = "1200"
-# NOTE :- HOW TO GET MIN STOP DISTANCE WITH GUARANTEED STOP????????????
 
 # #UNIT TEST FOR GOLD
 limitDistance_value = "1"
 orderType_value = "MARKET"
-size_value = "10"
+size_value = "3"
 expiry_value = "DFB"
 guaranteedStop_value = True
 currencyCode_value = "GBP"
 forceOpen_value = True
-stopDistance_value = "30"
+stopDistance_value = "12"
 
 
 # Let's say 30 trades? Not to be too greedy.....
 #MAIN PROGRAM LOOP STARTS HERE
-TIME_WAIT_MULTIPLIER = 4
+TIME_WAIT_MULTIPLIER = 60
 
-for x in range(1,30):
-	
-	price_list = []
-	ltv_list = []
-	
-	base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/2'
-	# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
-	
-	auth_r = requests.get(base_url, headers=authenticated_headers)
-	d = json.loads(auth_r.text)
-	
-	
-	for i in d['prices']:
-		ask_price = i['closePrice']['ask']
-		ltv = i['lastTradedVolume']
-		price_list.append(ask_price)
-		ltv_list.append(ltv)
-
-	#---------------------------------
-	firstValue = price_list[0]
-	lastValue = price_list[-1]
-	#---------------------------------
-	Start_Trading_Volume = ltv_list[0]
-	End_Trading_Volume = ltv_list[-1]
-	#---------------------------------
-	
-	print (firstValue)
-	print (lastValue)
-	print ("-----------------")
-	print (Start_Trading_Volume)
-	print (End_Trading_Volume)
-	
-	#NOTE :-
-	#Rule to add If volume increases when the price moves up or down, it is considered a price movement with strength.
-	
-	# if Start_Trading_Volume <= End_Trading_Volume and firstValue <= lastValue:
-		# print ("Higher Volume")
-		# print ("Higher Price")
-		# #Go Long
-	
-	if Start_Trading_Volume <= End_Trading_Volume and firstValue >= lastValue:
-		print ("Higher Volume")
-		print ("Lower Price")
-		#Go Short
+for x in range(1,12):
 		
 	
-	
-
-	if Start_Trading_Volume <= End_Trading_Volume and firstValue <= lastValue:
-		#Long Candidate, Buyers require increasing numbers and increasing enthusiasm in order to keep pushing prices higher. 
-		print ("Higher Volume")
-		print ("Higher Price")
-		print ("DIRECTION IS UP (LONG)")
-		DIRECTION_TO_TRADE = "BUY"
-		DIRECTION_TO_CLOSE = "SELL"
-		DIRECTION_TO_COMPARE = 'bid'
-	elif Start_Trading_Volume >= End_Trading_Volume and firstValue <= lastValue:
-		#Increasing price and decreasing volume show lack of interest, and this is a warning of a potential reversal.
-		print ("Higher Price")
-		print ("Lower Volume")
-		print ("DIRECTION IS DOWN (SHORT)")
-		DIRECTION_TO_TRADE = "SELL"
-		DIRECTION_TO_CLOSE = "BUY"
-		DIRECTION_TO_COMPARE = 'offer'
-	else:
-		print ("No Clear Direction of Trade/Trade on Client Sentiment")
-		base_url = REAL_OR_NO_REAL + '/clientsentiment/'+ MARKET_ID
-		auth_r = requests.get(base_url, headers=authenticated_headers)
-		d = json.loads(auth_r.text)
-
-		# DEBUG!!!!
-		print(auth_r.status_code)
-		print(auth_r.reason)
-		print (auth_r.text)
-
-		long_sent = d['longPositionPercentage']
-		short_sent = d['shortPositionPercentage']
-
-		if long_sent > short_sent:
-			DIRECTION_TO_TRADE = "BUY"
-			DIRECTION_TO_CLOSE = "SELL"
-			DIRECTION_TO_COMPARE = 'bid'
-		else:
-			DIRECTION_TO_TRADE = "SELL"
-			DIRECTION_TO_CLOSE = "BUY"
-			DIRECTION_TO_COMPARE = 'offer'
+	DO_A_THING = False
+	while not DO_A_THING == True:
+		try:
+			price_list = []
+			ltv_list = []
+			base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/MINUTE/' + str(random.randint(0,5))
+			# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
+			auth_r = requests.get(base_url, headers=authenticated_headers)
+			d = json.loads(auth_r.text)
 			
-	#---------------------------------
-	#---------------------------------
-	#---------------------------------
-	#---------------------------------
+			# print ("-----------------DEBUG-----------------")
+			# print(auth_r.status_code)
+			# print(auth_r.reason)
+			# print (auth_r.text)
+			# print ("-----------------DEBUG-----------------")
+			
+			for i in d['prices']:
+				ask_price = i['closePrice']['ask']
+				ltv = i['lastTradedVolume']
+				price_list.append(float(ask_price))
+				ltv_list.append(int(ltv))
+
+			#---------------------------------
+			firstValue = price_list[0]
+			lastValue = price_list[-1]
+			#---------------------------------
+			Start_Trading_Volume = ltv_list[0]
+			End_Trading_Volume = ltv_list[-1]
+			#---------------------------------
+			
+			#DEBUG
+			print ("-----------------")
+			print (firstValue)
+			print (lastValue)
+			print ("-----------------")
+			print ("Trade Volume : " + str(Start_Trading_Volume))
+			print ("Trade Volume : " + str(End_Trading_Volume))
+			print ("-----------------")
+			
+			#NOTE :-
+			#Rule to add If volume increases when the price moves up or down, it is considered a price movement with strength.
+			#Already Covered
+			# if Start_Trading_Volume <= End_Trading_Volume and firstValue <= lastValue:
+				# print ("Higher Volume")
+				# print ("Higher Price")
+				# #Go Long
+			
+			if Start_Trading_Volume < End_Trading_Volume and firstValue > lastValue:
+				print ("Higher Volume")
+				print ("Lower Price")
+				print ("DIRECTION IS DOWN (SHORT)")
+				DIRECTION_TO_TRADE = "SELL"
+				DIRECTION_TO_CLOSE = "BUY"
+				DIRECTION_TO_COMPARE = 'offer'
+				DO_A_THING = True
+			elif Start_Trading_Volume < End_Trading_Volume and firstValue < lastValue:
+				#Long Candidate, Buyers require increasing numbers and increasing enthusiasm in order to keep pushing prices higher. 
+				print ("Higher Volume")
+				print ("Higher Price")
+				print ("DIRECTION IS UP (LONG)")
+				DIRECTION_TO_TRADE = "BUY"
+				DIRECTION_TO_CLOSE = "SELL"
+				DIRECTION_TO_COMPARE = 'bid'
+				DO_A_THING = True
+			elif int(Start_Trading_Volume) > int(End_Trading_Volume) and firstValue < lastValue:
+				#Increasing price and decreasing volume show lack of interest, and this is a warning of a potential reversal.
+				print ("Higher Price")
+				print ("Lower Volume")
+				print ("DIRECTION IS DOWN (SHORT)")
+				DIRECTION_TO_TRADE = "SELL"
+				DIRECTION_TO_CLOSE = "BUY"
+				DIRECTION_TO_COMPARE = 'offer'
+				DO_A_THING = True
+			else:
+				DO_A_THING = False
+				print ("NO TRADE")
+				time.sleep(4)
+				#DO NOT TRADE
+				# print ("No Clear Direction of Trade/Trade on Client Sentiment")
+				# base_url = REAL_OR_NO_REAL + '/clientsentiment/'+ MARKET_ID
+				# auth_r = requests.get(base_url, headers=authenticated_headers)
+				# d = json.loads(auth_r.text)
+				# # DEBUG!!!!
+				# print(auth_r.status_code)
+				# print(auth_r.reason)
+				# print (auth_r.text)
+				# long_sent = d['longPositionPercentage']
+				# short_sent = d['shortPositionPercentage']
+				# if long_sent > short_sent:
+					# DIRECTION_TO_TRADE = "BUY"
+					# DIRECTION_TO_CLOSE = "SELL"
+					# DIRECTION_TO_COMPARE = 'bid'
+				# else:
+					# DIRECTION_TO_TRADE = "SELL"
+					# DIRECTION_TO_CLOSE = "BUY"
+					# DIRECTION_TO_COMPARE = 'offer'
+					
+			#---------------------------------
+			#---------------------------------
+			#---------------------------------
+			#---------------------------------
+	
+		except Exception as e:
+			DO_A_THING = False
+			print ("NO TRADE")
+			time.sleep(4)
+	
 	
 	base_url = REAL_OR_NO_REAL + '/positions/otc'
 	authenticated_headers = {'Content-Type':'application/json; charset=utf-8',
@@ -346,13 +359,19 @@ for x in range(1,30):
 	print("DEAL ID : " + str(d['dealId']))
 	print(d['dealStatus'])
 	print(d['reason'])
-	
+	time.sleep(2) #For some reason sleep here, Maybe just delay on IG Side??
 	# the trade will only break even once the price of the asset being traded has surpassed the sell price (for long trades) or buy price (for short trades). 
 	#READ IN INITIAL PROFIT
 		
 	base_url = REAL_OR_NO_REAL + '/positions/'+ DEAL_ID
 	auth_r = requests.get(base_url, headers=authenticated_headers)		
 	d = json.loads(auth_r.text)
+	
+	
+	# DEBUG
+	# print(auth_r.status_code)
+	# print(auth_r.reason)
+	# print (auth_r.text)
 	
 	if DIRECTION_TO_TRADE == "SELL":
 		PROFIT_OR_LOSS = float(d['position']['openLevel']) - float(d['market'][DIRECTION_TO_COMPARE])
@@ -379,12 +398,12 @@ for x in range(1,30):
 				PROFIT_OR_LOSS = float(d['position']['openLevel']) - float(d['market'][DIRECTION_TO_COMPARE])
 				PROFIT_OR_LOSS = float(PROFIT_OR_LOSS * float(size_value))
 				print ("Deal Number : " + str(x) + " Profit/Loss : " + str(PROFIT_OR_LOSS))
-				time.sleep(TIME_WAIT_MULTIPLIER) #Don't be too keen to read price
+				time.sleep(4) #Don't be too keen to read price
 			else:
 				PROFIT_OR_LOSS = float(d['market'][DIRECTION_TO_COMPARE] - float(d['position']['openLevel']))
 				PROFIT_OR_LOSS = float(PROFIT_OR_LOSS * float(size_value))
 				print ("Deal Number : " + str(x) + " Profit/Loss : " + str(PROFIT_OR_LOSS))
-				time.sleep(TIME_WAIT_MULTIPLIER) #Don't be too keen to read price
+				time.sleep(4) #Don't be too keen to read price
 						
 	except Exception as e:
 		#print(e) #Yeah, I know now. 
@@ -426,3 +445,4 @@ for x in range(1,30):
 		# print(d['reason'])
 		
 		time.sleep(random.randint(1, TIME_WAIT_MULTIPLIER)) #Obligatory Wait before doing next order
+
