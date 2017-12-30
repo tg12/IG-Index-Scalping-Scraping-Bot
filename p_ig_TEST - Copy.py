@@ -16,8 +16,10 @@ import json
 import logging
 import sys
 import urllib
-import time
+#import time
+from time import time, sleep
 import random
+import time as systime
 
 #JUST USED TO FOR LINUX TO CHANGE COLORS OR TERMINAL
 W  = '\033[0m'# white (normal)
