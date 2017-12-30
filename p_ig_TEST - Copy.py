@@ -1,4 +1,3 @@
-#CODED BY JAMES SAWYER
 #IF YOU FOUND THIS USEFUL, Please Donate some Bitcoin .... 1FWt366i5PdrxCC6ydyhD8iywUHQ2C7BWC
 #More Info here :-https://github.com/tg12/IG-Index-Scalping-Scraping-Bot
 #And here :- https://www.reddit.com/r/UKInvesting/comments/7lx03l/python_ig_index_bot/
