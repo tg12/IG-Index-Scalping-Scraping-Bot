@@ -1,3 +1,8 @@
+#CODED BY JAMES SAWYER
+#IF YOU FOUND THIS USEFUL, Please Donate some Bitcoin .... 1FWt366i5PdrxCC6ydyhD8iywUHQ2C7BWC
+#More Info here :-https://github.com/tg12/IG-Index-Scalping-Scraping-Bot
+#And here :- https://www.reddit.com/r/UKInvesting/comments/7lx03l/python_ig_index_bot/
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -80,67 +85,6 @@ auth_r = requests.put(base_url, data=json.dumps(data), headers=authenticated_hea
 # print (auth_r.text)
 #ERROR about account ID been the same, Ignore! 
 
-#*******************************************************************
-#*******************************************************************
-#*******************************************************************
-#*******************************************************************
-#--------------------FIND OUT WHAT MARKETS ARE OPEN (Weekend)-------
-#This is pointless and likely to exceed your API Allowance
-#Code left for posterity
-
-
-# base_url = REAL_OR_NO_REAL + '/marketnavigation'
-# auth_r = requests.get(base_url, headers=authenticated_headers)
-# d = json.loads(auth_r.text)
-
-# print(auth_r.status_code)
-# print(auth_r.reason)
-# print (auth_r.text)
-
-# for i in d['nodes']:
-	# print("name : " + str(i['name']))
-	# print("id : " + str(i['id']))
-	# # NODE_TO_SEARCH = 101515
-	# print("----------")
-	# base_url = REAL_OR_NO_REAL + '/marketnavigation/'+ NODE_TO_SEARCH
-	# auth_r = requests.get(base_url, headers=authenticated_headers)
-	# e = json.loads(auth_r.text)
-	# for j in e['nodes']:
-		# print("name : " + str(j['name']))
-		# print("id : " + str(j['id']))
-		# NODE_TO_SEARCH = j['id']
-		# base_url = REAL_OR_NO_REAL + '/marketnavigation/'+ NODE_TO_SEARCH
-		# auth_r = requests.get(base_url, headers=authenticated_headers)
-		# e = json.loads(auth_r.text)
-		# print(auth_r.status_code)
-		# print(auth_r.reason)
-		# print (auth_r.text)
-
-
-#*******************************************************************
-#*******************************************************************
-#*******************************************************************
-#*******************************************************************
-#Code to find your epic/instrument
-
-# search_term = "GBP USD"
-# base_url = REAL_OR_NO_REAL + '/markets?searchTerm='+ search_term
-# auth_r = requests.get(base_url, headers=authenticated_headers)
-# d = json.loads(auth_r.text)
-
-# print(auth_r.status_code)
-# print(auth_r.reason)
-# print (auth_r.text)
-
-# for i in d['markets']:
-	# if str(i['marketStatus']) == "TRADEABLE":
-		# print("Status : " + str(i['marketStatus']))
-		# print("----------")
-		# print("Epic : " + str(i['epic']))
-		# print("----------")
-	
-#epic_id = str(i['epic'])
-
 #DOW RALLY EVERYDAY AT 20:40 - 21:00GMT
 now = datetime.datetime.now()
 now_time = now.time()
@@ -151,38 +95,52 @@ now_time = now.time()
 #-------------THIS NEEDS CHANGING AT SOME POINT---------------------------
 #-------------THIS NEEDS CHANGING AT SOME POINT---------------------------
 
-if now_time >= datetime.time(5,30) and now_time <= datetime.time(16,30): # Day Trading
-	print ("FTSE TRADING HOURS")
-	epic_id = "IX.D.FTSE.DAILY.IP"
-elif now_time >= datetime.time(23,30) and now_time <= datetime.time(5,29): #Overnight
-	print ("GOLD TRADING HOURS")
-	epic_id = "CS.D.USCGC.TODAY.IP"
-elif now_time >= datetime.time(18,30) and now_time <= datetime.time(20,30): #Wall Street
-	print ("Wall St TRADING")
-	epic_id = "IX.D.DOW.DAILY.IP"
-else:
-	print ("DEFAULT")
-	epic_id = "CS.D.USCSI.TODAY.IP"
+# if now_time >= datetime.time(5,30) and now_time <= datetime.time(16,30): # Day Trading
+	# print ("CS.D.GBPUSD.TODAY.IP")
+	# epic_id = "CS.D.GBPUSD.TODAY.IP"
+# elif now_time >= datetime.time(23,30) and now_time <= datetime.time(5,29): #Overnight
+	# print ("CS.D.USCGC.TODAY.IP")
+	# epic_id = "CS.D.USCGC.TODAY.IP"
+# elif now_time >= datetime.time(18,30) and now_time <= datetime.time(20,30): #Wall Street
+	# print ("IX.D.DOW.DAILY.IP")
+	# epic_id = "IX.D.DOW.DAILY.IP"
+# else:
+	# print ("DEFAULT/NO TRADE")
+	# epic_id = "CS.D.USCSI.TODAY.IP"
 	
-#-------------THIS NEEDS CHANGING AT SOME POINT---------------------------
-#-------------THIS NEEDS CHANGING AT SOME POINT---------------------------
-#-------------THIS NEEDS CHANGING AT SOME POINT---------------------------
-#-------------THIS NEEDS CHANGING AT SOME POINT---------------------------
-	
-
-#HACKY/Weekend Testing
+#HACKY/Weekend Testing - DO NOT USE!!! UNLESS YOU KNOW WHAT YOU ARE DOING!!
 #epic_id = "CS.D.BITCOIN.TODAY.IP" #Bitcoin
 #epic_id = "IX.D.SUNFUN.DAILY.IP" #Weekend Trading
 epic_id = "CS.D.ETHUSD.TODAY.IP" #Ether
 #epic_id = "CS.D.BCHUSD.TODAY.IP" #Bitcoin Cash
 
 #LIVE TEST
-#epic_id = "CS.D.USCGC.TODAY.IP" #Gold
-#epic_id = "CS.D.USCSI.TODAY.IP" #Silver
-#epic_id = "IX.D.FTSE.DAILY.IP" #FTSE 100
-#epic_id = "IX.D.DOW.DAILY.IP" #Wall St
-#epic_id = "CS.D.GBPUSD.TODAY.IP"
+#epic_id = "CS.D.USCGC.TODAY.IP" #Gold - OK, Not Great
+#epic_id = "CS.D.USCSI.TODAY.IP" #Silver - NOT RECOMMENDED 
+#epic_id = "IX.D.FTSE.DAILY.IP" #FTSE 100 - Within Hours only, Profitable
+#epic_id = "IX.D.DOW.DAILY.IP" #Wall St - Definately Profitable between half 6 and half 8 GMT
+#epic_id = "CS.D.GBPUSD.TODAY.IP" - Very Profitable 
 
+# PROGRAMMABLE VALUES
+# UNIT TEST FOR CRYPTO'S
+limitDistance_value = "1"
+orderType_value = "MARKET"
+size_value = "5"
+expiry_value = "DFB"
+guaranteedStop_value = True
+currencyCode_value = "GBP"
+forceOpen_value = True
+stopDistance_value = "250"
+
+# # #UNIT TEST FOR OTHER STUFF
+# limitDistance_value = "1"
+# orderType_value = "MARKET"
+# size_value = "1"
+# expiry_value = "DFB"
+# guaranteedStop_value = True
+# currencyCode_value = "GBP"
+# forceOpen_value = True
+# stopDistance_value = "20" #Initial Stop loss, Worked out later per trade
 
 base_url = REAL_OR_NO_REAL + '/markets/' + epic_id
 auth_r = requests.get(base_url, headers=authenticated_headers)
@@ -195,91 +153,32 @@ d = json.loads(auth_r.text)
 
 MARKET_ID = d['instrument']['marketId']
 
-
-
-#*******************************************************************
-#*******************************************************************
-#*******************************************************************
-#*******************************************************************
-#ALTERNATIVE DIRECTION
-#--------------------------------------------------------------------
-#--------------------------------------------------------------------
-#--------------------------------------------------------------------
-
-# base_url = REAL_OR_NO_REAL + '/clientsentiment/'+ marketId
-# auth_r = requests.get(base_url, headers=authenticated_headers)
-# d = json.loads(auth_r.text)
-
-# # DEBUG!!!!
-# # print(auth_r.status_code)
-# # print(auth_r.reason)
-# # print (auth_r.text)
-
-# long_sent = d['longPositionPercentage']
-# short_sent = d['shortPositionPercentage']
-
-# if long_sent > short_sent:
-	# DIRECTION_TO_TRADE = "BUY"
-	# DIRECTION_TO_CLOSE = "SELL"
-	# DIRECTION_TO_COMPARE = 'bid'
-# else:
-	# DIRECTION_TO_TRADE = "SELL"
-	# DIRECTION_TO_CLOSE = "BUY"
-	# DIRECTION_TO_COMPARE = 'offer'
-	
-
 #*******************************************************************
 #*******************************************************************
 #*******************************************************************
 #*******************************************************************
 
-# PROGRAMMABLE VALUES
-# UNIT TEST FOR CRYPTO'S
-
-limitDistance_value = "1"
-orderType_value = "MARKET"
-size_value = "5"
-expiry_value = "DFB"
-guaranteedStop_value = True
-currencyCode_value = "GBP"
-forceOpen_value = True
-stopDistance_value = "220"
-
-# # #UNIT TEST FOR OTHER STUFF
-# limitDistance_value = "1"
-# orderType_value = "MARKET"
-# size_value = "1"
-# expiry_value = "DFB"
-# guaranteedStop_value = True
-# currencyCode_value = "GBP"
-# forceOpen_value = True
-# stopDistance_value = "20" #Initial Stop loss, Worked out later
-
-# #------------------------------------
-# #------------------------------------
-# #------------------------------------
-# #------------------------------------
 # #Calculate average number of pips moved per hour and take an average
 # #Do this on an 24 hour basis once?? OR Do it each time??
 
-price_list = []
-base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/24'
-# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
-auth_r = requests.get(base_url, headers=authenticated_headers)
-d = json.loads(auth_r.text)
+# price_list = []
+# base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR_4/3'
+# # Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
+# auth_r = requests.get(base_url, headers=authenticated_headers)
+# d = json.loads(auth_r.text)
 
-# print ("-----------------DEBUG-----------------")
-# print(auth_r.status_code)
-# print(auth_r.reason)
-# print (auth_r.text)
-# print ("-----------------DEBUG-----------------")
+# # print ("-----------------DEBUG-----------------")
+# # print(auth_r.status_code)
+# # print(auth_r.reason)
+# # print (auth_r.text)
+# # print ("-----------------DEBUG-----------------")
 
-for i in d['prices']:
-	ask_price = i['closePrice']['ask']
-	price_list.append(float(ask_price))
+# for i in d['prices']:
+	# ask_price = i['closePrice']['ask']
+	# price_list.append(float(ask_price))
 
-avg_diff = [price_list[i+1]-price_list[i] for i in range(len(price_list)-1)]
-#DEBUG
+# avg_diff = [price_list[i+1]-price_list[i] for i in range(len(price_list)-1)]
+# #DEBUG
 # print ("AVG PIP MOVEMENT FOR EACH HOUR " + str(avg_diff))
 # print ("--------------------------------------------------")
 # print ("--------------------------------------------------")
@@ -288,8 +187,7 @@ avg_diff = [price_list[i+1]-price_list[i] for i in range(len(price_list)-1)]
 # print ("--------------------------------------------------")
 # print ("--------------------------------------------------")
 # print ("--------------------------------------------------")
-# systime.sleep(4)
-# STOP_LOSS_MULTIPLIER = int(max(avg_diff))
+# # STOP_LOSS_MULTIPLIER = int(max(avg_diff))
 
 # if min(avg_diff) < 0:
 	# STOP_LOSS_MULTIPLIER = min(avg_diff) * -1 
@@ -306,6 +204,9 @@ avg_diff = [price_list[i+1]-price_list[i] for i in range(len(price_list)-1)]
 # #------------------------------------
 # #------------------------------------
 # #------------------------------------
+
+#NOTE - This code works out the value from the last few hours percent change wise. Then uses that as a guide to work out the percent change. 
+#i.e Avoid low quality trades by checking the volume traded
 
 vol_list = []
 base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/HOUR/6'
@@ -323,52 +224,44 @@ for i in d['prices']:
 	ltv = i['lastTradedVolume']
 	vol_list.append(int(ltv))
 
-#print ([((a - b) / a * 100) for a, b in zip(vol_list[::2], vol_list[1::2])])
+print ([((a - b) / a * 100) for a, b in zip(vol_list[::2], vol_list[1::2])])
 avg_diff = ([((a - b) / a * 100) for a, b in zip(vol_list[::2], vol_list[1::2])])
-
+#THIS IS THE CODE THAT WORKS - REF ONLY
 #((list price - actual price) / (list price)) * 100%
 
 #DEBUG
-# print ("AVG PIP MOVEMENT FOR EACH HOUR " + str(avg_diff))
+# print ("AVG VOLUME FOR EACH HOUR " + str(avg_diff))
 # print ("--------------------------------------------------")
 # print ("--------------------------------------------------")
 # print ("--------------------------------------------------")
-print ("MAX PIP MOVEMENT IN 24 HOURS : " + str(max(avg_diff)))
-print ("MIN PIP MOVEMENT IN 24 HOURS : " + str(min(avg_diff)))
-print ("--------------------------------------------------")
-print ("--------------------------------------------------")
-print ("--------------------------------------------------")
-systime.sleep(4)
-# STOP_LOSS_MULTIPLIER = int(max(avg_diff))
+# print ("MAX VOLUME IN 24 HOURS : " + str(max(avg_diff)))
+# print ("MIN VOLUME IN 24 HOURS : " + str(min(avg_diff)))
+# print ("--------------------------------------------------")
+# print ("--------------------------------------------------")
+# print ("--------------------------------------------------")
+VOL_CHANGE_MULTI = max(avg_diff)
+print ("VOL_CHANGE_MULTI : " + str(VOL_CHANGE_MULTI))
 
-# if min(avg_diff) < 0:
-	# STOP_LOSS_MULTIPLIER = min(avg_diff) * -1 
-	# #STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
-	# STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
-	# print ("STOP_LOSS_MULTIPLIER : " + str(STOP_LOSS_MULTIPLIER))
-# else:
-	# #STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
-	# STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
-	# print ("STOP_LOSS_MULTIPLIER : " + str(STOP_LOSS_MULTIPLIER))
-	
 #*******************************************************************
 #*******************************************************************
 #*******************************************************************
 #*******************************************************************
 
 #TO DO:
+#-------------
 #READ IN PRICE CHANGE ON DAY FOR THESE
-
 #NEW YEARS EVE EVE TO DO:
 #TEST FOR NEGATIVE MOVEMENT ALL DAY THEN CONVERT
 
-STOP_LOSS_MULTIPLIER = 50
-VOL_CHANGE_MULTI = max(avg_diff)
-
-
+#HACKY TO TEST
+#-------------
+#VOL_CHANGE_MULTI = 5
+#STOP_LOSS_MULTIPLIER = 50
 
 # Let's say 30 trades? Not to be too greedy.....
 #MAIN PROGRAM LOOP STARTS HERE
+#------------------------------------------------
+
 TIME_WAIT_MULTIPLIER = 45
 def percentage(part, whole):
   return (part * whole) / 100.0
@@ -384,7 +277,6 @@ for x in range(1,7):
 			ltv_list = []
 			systime.sleep(1)
 			base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/MINUTE/' + str(random.randint(9,15))
-			#base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/MINUTE/15'
 			# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
 			auth_r = requests.get(base_url, headers=authenticated_headers)
 			d = json.loads(auth_r.text)
@@ -414,14 +306,14 @@ for x in range(1,7):
 			#print ("MAX PIP MOVEMENT IN THIS TIME PERIOD : " + str(max(avg_diff)))
 			
 			if min(avg_diff) < 0:
-				STOP_LOSS_MULTIPLIER = min(avg_diff) * -1 
+				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + min(avg_diff) * -1  #Convert Negative to Positive
 				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
-				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
+				#STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
 				print ("STOP_LOSS_MULTIPLIER : " + str(STOP_LOSS_MULTIPLIER))
 			else:
-				STOP_LOSS_MULTIPLIER = max(avg_diff)
+				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + max(avg_diff)
 				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
-				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
+				#STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
 				print ("STOP_LOSS_MULTIPLIER : " + str(STOP_LOSS_MULTIPLIER))
 				
 				
@@ -596,9 +488,6 @@ for x in range(1,7):
 				print ("Deal Number : " + str(x) + " Profit/Loss : " + str(PROFIT_OR_LOSS))
 				systime.sleep(2) #Don't be too keen to read price
 				
-			#Add artificial stop loss code here - 27/12
-			#Check Profit/Loss against size values
-			
 			ARTIFICIAL_STOP_LOSS = int(size_value) * STOP_LOSS_MULTIPLIER
 			ARTIFICIAL_STOP_LOSS = ARTIFICIAL_STOP_LOSS * -1 #Make Negative, DO NOT REMOVE!!
 			# print (PROFIT_OR_LOSS)
