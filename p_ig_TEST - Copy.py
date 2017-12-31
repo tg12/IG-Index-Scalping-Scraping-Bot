@@ -4,11 +4,6 @@
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-#TO DO's
-#Find a better way of setting epic, Rather than the Hacky AF way I do it now. It's OK for now. 
-
-import random
 import time
 import datetime
 import requests
@@ -16,31 +11,24 @@ import json
 import logging
 import sys
 import urllib
-#import time
 from time import time, sleep
 import random
 import time as systime
+from statistics import mean, median
 
-#JUST USED TO FOR LINUX TO CHANGE COLORS OR TERMINAL
-W  = '\033[0m'# white (normal)
-R  = '\033[31m'# red
-G  = '\033[32m'# green
-O  = '\033[33m'# orange
-B  = '\033[34m'# blue
-P  = '\033[35m'# purple
 
 #Joke here
 #REAL_OR_NO_REAL = 'https://api.ig.com/gateway/deal'
 REAL_OR_NO_REAL = 'https://demo-api.ig.com/gateway/deal'
 
 API_ENDPOINT = "https://demo-api.ig.com/gateway/deal/session"
-API_KEY = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-data = {"identifier":"<<YOUR USERNAME HERE>>>","password": "<<YOUR PASSWORD HERE>>"}
+API_KEY = '*****************************'
+data = {"identifier":"****************","password": "****************"}
 
 # FOR REAL....
-#API_ENDPOINT = "https://api.ig.com/gateway/deal/session"
-#API_KEY = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-#data = {"identifier":"<<YOUR USERNAME HERE>>>","password": "<<YOUR PASSWORD HERE>>"}
+# API_ENDPOINT = "https://api.ig.com/gateway/deal/session"
+# API_KEY = '********************************************'
+# data = {"identifier":"**************************","password": "***************************"}
 
 headers = {'Content-Type':'application/json; charset=utf-8',
         'Accept':'application/json; charset=utf-8',
@@ -112,7 +100,7 @@ now_time = now.time()
 #HACKY/Weekend Testing - DO NOT USE!!! UNLESS YOU KNOW WHAT YOU ARE DOING!!
 #epic_id = "CS.D.BITCOIN.TODAY.IP" #Bitcoin
 #epic_id = "IX.D.SUNFUN.DAILY.IP" #Weekend Trading
-epic_id = "CS.D.ETHUSD.TODAY.IP" #Ether
+#epic_id = "CS.D.ETHUSD.TODAY.IP" #Ether
 #epic_id = "CS.D.BCHUSD.TODAY.IP" #Bitcoin Cash
 
 #LIVE TEST
@@ -120,28 +108,28 @@ epic_id = "CS.D.ETHUSD.TODAY.IP" #Ether
 #epic_id = "CS.D.USCSI.TODAY.IP" #Silver - NOT RECOMMENDED 
 #epic_id = "IX.D.FTSE.DAILY.IP" #FTSE 100 - Within Hours only, Profitable
 #epic_id = "IX.D.DOW.DAILY.IP" #Wall St - Definately Profitable between half 6 and half 8 GMT
-#epic_id = "CS.D.GBPUSD.TODAY.IP" - Very Profitable 
+epic_id = "CS.D.GBPUSD.TODAY.IP" # - Very Profitable 
 
 # PROGRAMMABLE VALUES
 # UNIT TEST FOR CRYPTO'S
-limitDistance_value = "1"
-orderType_value = "MARKET"
-size_value = "5"
-expiry_value = "DFB"
-guaranteedStop_value = True
-currencyCode_value = "GBP"
-forceOpen_value = True
-stopDistance_value = "250"
-
-# # #UNIT TEST FOR OTHER STUFF
 # limitDistance_value = "1"
 # orderType_value = "MARKET"
-# size_value = "1"
+# size_value = "5"
 # expiry_value = "DFB"
 # guaranteedStop_value = True
 # currencyCode_value = "GBP"
 # forceOpen_value = True
-# stopDistance_value = "20" #Initial Stop loss, Worked out later per trade
+# stopDistance_value = "250"
+
+#UNIT TEST FOR OTHER STUFF
+limitDistance_value = "1"
+orderType_value = "MARKET"
+size_value = "1"
+expiry_value = "DFB"
+guaranteedStop_value = True
+currencyCode_value = "GBP"
+forceOpen_value = True
+stopDistance_value = "20" #Initial Stop loss, Worked out later per trade
 
 base_url = REAL_OR_NO_REAL + '/markets/' + epic_id
 auth_r = requests.get(base_url, headers=authenticated_headers)
@@ -240,7 +228,7 @@ avg_diff = ([((a - b) / a * 100) for a, b in zip(vol_list[::2], vol_list[1::2])]
 # print ("--------------------------------------------------")
 # print ("--------------------------------------------------")
 # print ("--------------------------------------------------")
-VOL_CHANGE_MULTI = max(avg_diff)
+VOL_CHANGE_MULTI = mean(avg_diff)
 print ("VOL_CHANGE_MULTI : " + str(VOL_CHANGE_MULTI))
 
 #*******************************************************************
@@ -274,14 +262,14 @@ for x in range(1,7):
 	DO_A_THING = False
 	while not DO_A_THING == True:
 		try:
+			systime.sleep(random.randint(1,9))
 			price_list = []
 			ltv_list = []
-			systime.sleep(1)
+			
 			base_url = REAL_OR_NO_REAL + '/prices/'+ epic_id + '/MINUTE/' + str(random.randint(9,15))
 			# Price resolution (MINUTE, MINUTE_2, MINUTE_3, MINUTE_5, MINUTE_10, MINUTE_15, MINUTE_30, HOUR, HOUR_2, HOUR_3, HOUR_4, DAY, WEEK, MONTH)
 			auth_r = requests.get(base_url, headers=authenticated_headers)
 			d = json.loads(auth_r.text)
-			systime.sleep(1)
 			# print ("-----------------DEBUG-----------------")
 			# print(auth_r.status_code)
 			# print(auth_r.reason)
@@ -308,12 +296,13 @@ for x in range(1,7):
 			
 			if min(avg_diff) < 0:
 				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + min(avg_diff) * -1  #Convert Negative to Positive
-				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
+				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + mean(avg_diff)
+				#STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
 				#STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
 				print ("STOP_LOSS_MULTIPLIER : " + str(STOP_LOSS_MULTIPLIER))
 			else:
-				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + max(avg_diff)
-				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
+				STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + mean(avg_diff)
+				#STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER * random.randint(3,4) #B'cos you know
 				#STOP_LOSS_MULTIPLIER = STOP_LOSS_MULTIPLIER + int(size_value) 
 				print ("STOP_LOSS_MULTIPLIER : " + str(STOP_LOSS_MULTIPLIER))
 				
