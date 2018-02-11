@@ -22,3 +22,6 @@ https://labs.ig.com/faq
 
 Line 327 - This is how far to look back to get an idea of market direction. You can change this, I use 2 hours, I have tested it as high as 3 hours and as low as a minute (Which is pretty useless).
 
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WQ6V6K8ZY6D84">
+  <img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" alt="Donate with PayPal" />
+</a>
